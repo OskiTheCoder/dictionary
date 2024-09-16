@@ -1,20 +1,31 @@
-type Phonetic = {
-  text: string;
-  audio?: string;
-};
+import { useRef } from 'react';
+import { PlayIcon } from '@radix-ui/react-icons';
+import type { Phonetic } from './main';
 
-type WordData = {
-  word: string;
-  phonetic: string;
-  phonetics: Phonetic[];
-};
-export default function Word(props: WordData) {
-  const { word, phonetic = '', phonetics = [] } = props;
+import { Button } from '@/components/ui/button';
+
+export default function Word(props: { word: string; phonetics: Phonetic[] }) {
+  const { word, phonetics } = props;
+  const phonetic = phonetics.find(
+    (phonetic) => phonetic.text && phonetic.audio
+  );
+  const audio = new Audio(phonetic?.audio);
+
+  const play = () => {
+    audio.play();
+  };
+
   return (
-    <div>
-      <div>
-        <h2>{word}</h2>
+    <div className='flex justify-between items-center'>
+      <div className='flex flex-col gap-2'>
+        <h2 className='text-3xl font-semibold'>{word}</h2>
+        <span className='text-xl text-muted-foreground'>
+          {phonetic && phonetic.text}
+        </span>
       </div>
+      <Button variant='outline' onClick={play}>
+        <PlayIcon className='mr-2 h-4 w-4' /> Audio
+      </Button>
     </div>
   );
 }

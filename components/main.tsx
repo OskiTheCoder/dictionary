@@ -3,16 +3,9 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import Word from './word';
 
-type License = {
-  name: string;
-  url: string;
-};
-
-type Phonetic = {
+export type Phonetic = {
   text: string;
-  audio: string;
-  sourceUrl?: string;
-  license?: License;
+  audio?: string;
 };
 
 type Definition = {
@@ -32,16 +25,15 @@ type Meaning = {
 type WordEntry = {
   word: string;
   phonetic: string;
-  phonetics: Phonetic[];
+  phonetics: Phonetic[] | [];
   meanings: Meaning[];
-  license: License;
-  sourceUrls: string[];
+  sourceUrls?: string[];
 };
 
-type DictionaryApiResponse = WordEntry[];
+type DictionaryApiResponse = WordEntry;
 
 function useGetDefinition() {
-  const [definition, setDefinition] = useState<any>();
+  const [definitions, setDefinitions] = useState<DictionaryApiResponse>();
   const [error, setError] = useState<boolean>(false);
 
   const fetchDefinition = async (word: string) => {
@@ -50,23 +42,24 @@ function useGetDefinition() {
       const response = await fetch(`/api/definition?word=${word}`);
       if (!response.ok)
         throw new Error('Failed to fetch definition for given word');
-      const [data] = await response.json();
-      setDefinition(data);
+      const data = await response.json();
+      // just take first definition object for now
+      setDefinitions(data.data[0]);
     } catch (err) {
       setError(true);
     }
   };
 
-  return { definition, error, fetchDefinition };
+  return { definitions, error, fetchDefinition };
 }
 
 export default function Main() {
   const [word, setWord] = useState('');
-  const { definition, error, fetchDefinition } = useGetDefinition();
-  const handleSubmit = (e: React.FormEvent) => {
+  const { definitions, error, fetchDefinition } = useGetDefinition();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (word) {
-      fetchDefinition(word);
+      await fetchDefinition(word);
     }
   };
 
@@ -91,14 +84,14 @@ export default function Main() {
           </p>
         </div>
       )}
-      {definition && (
-        <>
+      {definitions && (
+        <div className='py-12'>
           <Word
-            word={definition?.word}
-            phonetic={definition?.phonetic}
-            phonetics={definition?.phonetics}
+            key={definitions.word}
+            word={definitions.word}
+            phonetics={definitions.phonetics}
           />
-        </>
+        </div>
       )}
     </main>
   );
