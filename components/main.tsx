@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import Word from './word';
+import MeaningInfo from './meaning-info';
 
 export type Phonetic = {
   text: string;
@@ -15,7 +16,7 @@ type Definition = {
   example?: string;
 };
 
-type Meaning = {
+export type Meaning = {
   partOfSpeech: string;
   definitions: Definition[];
   synonyms: string[];
@@ -54,7 +55,7 @@ function useGetDefinition() {
 }
 
 export default function Main() {
-  const [word, setWord] = useState('');
+  const [word, setWord] = useState('coffee');
   const { definitions, error, fetchDefinition } = useGetDefinition();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +63,10 @@ export default function Main() {
       await fetchDefinition(word);
     }
   };
+
+  useEffect(() => {
+    fetchDefinition('coffee');
+  }, []);
 
   return (
     <main className='p-8'>
@@ -91,6 +96,7 @@ export default function Main() {
             word={definitions.word}
             phonetics={definitions.phonetics}
           />
+          <MeaningInfo meanings={definitions.meanings} />
         </div>
       )}
     </main>

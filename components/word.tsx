@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { PlayIcon } from '@radix-ui/react-icons';
 import type { Phonetic } from './main';
 
@@ -18,7 +17,7 @@ export default function Word(props: { word: string; phonetics: Phonetic[] }) {
   return (
     <div className='flex justify-between items-center'>
       <div className='flex flex-col gap-2'>
-        <h2 className='text-3xl font-semibold'>{word}</h2>
+        <h1 className='text-5xl font-semibold'>{word}</h1>
         <span className='text-xl text-muted-foreground'>
           {phonetic && phonetic.text}
         </span>
