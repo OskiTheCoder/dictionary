@@ -4,8 +4,11 @@ export default function MeaningInfo(props: { meanings: Meaning[] }) {
   const { meanings } = props;
   return (
     <div className='py-8'>
-      {meanings.map((meaning) => (
-        <div className='flex flex-col pb-8'>
+      {meanings.map((meaning, index) => (
+        <div
+          key={`${meaning.partOfSpeech}-${index}`}
+          className='flex flex-col pb-8'
+        >
           <div className='flex items-center gap-8'>
             <h2 className='font-bold text-2xl italic'>
               {meaning.partOfSpeech}
@@ -16,7 +19,7 @@ export default function MeaningInfo(props: { meanings: Meaning[] }) {
             <p className='text-muted-foreground'>Meaning</p>
             <ul className='my-4 ml-6 list-disc [&>li]:mt-2'>
               {meaning.definitions.map((definition) => (
-                <div className='flex flex-col my-4'>
+                <div key={definition.definition} className='flex flex-col my-4'>
                   <li>{definition.definition}</li>
                   {definition.example && (
                     <p className='mt-2 text-muted-foreground italic'>{`"${definition.example}"`}</p>
