@@ -31,11 +31,11 @@ type WordEntry = {
   sourceUrls?: string[];
 };
 
-type DictionaryApiResponse = WordEntry;
+type DictionaryApiResponse = WordEntry | null;
 
 function useGetDefinition() {
-  const [definitions, setDefinitions] = useState<DictionaryApiResponse>();
-  const [error, setError] = useState<boolean>(false);
+  const [definitions, setDefinitions] = useState<DictionaryApiResponse>(null);
+  const [error, setError] = useState(false);
 
   const fetchDefinition = async (word: string) => {
     setError(false);
@@ -48,6 +48,7 @@ function useGetDefinition() {
       setDefinitions(data.data[0]);
     } catch (err) {
       setError(true);
+      setDefinitions(null);
     }
   };
 
