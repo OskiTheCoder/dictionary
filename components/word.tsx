@@ -22,9 +22,11 @@ export default function Word(props: { word: string; phonetics: Phonetic[] }) {
           {phonetic && phonetic.text}
         </span>
       </div>
-      <Button variant='outline' onClick={play}>
-        <PlayIcon className='mr-2 h-4 w-4' /> Audio
-      </Button>
+      {phonetic && (
+        <Button variant='outline' onClick={play}>
+          <PlayIcon className='mr-2 h-4 w-4' /> Audio
+        </Button>
+      )}
     </div>
   );
 }

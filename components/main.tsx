@@ -1,5 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import Word from './word';
 import MeaningInfo from './meaning-info';
@@ -56,18 +58,34 @@ function useGetDefinition() {
 }
 
 export default function Main() {
-  const [word, setWord] = useState('coffee');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [word, setWord] = useState<string>();
   const { definitions, error, fetchDefinition } = useGetDefinition();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (word) {
+      router.push(pathname + '?' + createQueryString('word', word));
       await fetchDefinition(word);
     }
   };
 
   useEffect(() => {
-    fetchDefinition('coffee');
+    const search = searchParams.get('word') ?? 'coffee';
+    fetchDefinition(search);
+    setWord(search);
   }, []);
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   return (
     <main className='p-8'>
